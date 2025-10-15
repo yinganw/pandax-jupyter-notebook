@@ -76,3 +76,15 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Troubleshooting
+
+If `npm run dev` fails with 
+```bash
+Syntax error: tailwindcss: /Users/yinganwang/Development/capstone/pandax-jupyter-notebook/node_modules/@jupyterlab/apputils-extension/style/base.css Can't resolve '~react-toastify/dist/ReactToastify.min.css' in '/Users/yinganwang/Development/capstone/pandax-jupyter-notebook/node_modules/@jupyterlab/apputils-extension/style'
+```
+go to `pandax-jupyter-notebook/node_modules/@jupyterlab/apputils-extension/style/notification.css` and remove the `~` in line 6:
+
+```
+@import '~react-toastify/dist/ReactToastify.min.css';
+```
