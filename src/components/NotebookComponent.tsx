@@ -24,14 +24,15 @@ type INotebookComponentProps = {
   theme?: PrimerTheme;
 };
 
-const NOTEBOOK_PATH = "test.ipynb";
+const NOTEBOOK_PATH =
+  "/Users/yinganwang/Development/capstone/pandax-meng/notebooks/spscientist/student-performance-in-exams/src/small_bench_meng.ipynb";
 
 export const NotebookComponent = (props: INotebookComponentProps) => {
   //  const { colorMode, theme } = props;
   const { defaultKernel, serviceManager } = useJupyter({
-    // jupyterServerUrl: "https://oss.datalayer.run/api/jupyter-server",
     jupyterServerUrl: "http://localhost:8888",
-    jupyterServerToken: "9c500efe182a8b089d1dc32c9c3637ecee9fa11a62bd0a09",
+    jupyterServerToken: "02895a35fd09397665a0f2a43acc62e0c1e523c2b79c52ec",
+    // jupyterServerUrl: "https://oss.datalayer.run/api/jupyter-server",
     // "60c1661cc408f978c309d04157af55c9588ff9557c9380e4fb50785750703da6",
     startDefaultKernel: true,
   });
