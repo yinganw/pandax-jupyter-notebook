@@ -50,22 +50,20 @@ const { defaultKernel, serviceManager } = useJupyter({
 
 ### Run Jupyter server
 
-In this repo's root directory, run
+In the `pandax-meng` repo's root directory, run
 ```bash
-jupyter server --NotebookApp.allow_origin=<local-jupyter-server-url> --NotebookApp.token=<local-jupyter-server-token> --NotebookApp.allow_credentials=True
+# Can add notebook_dir to specify a root directory to read files 
+jupyter server \
+  --ServerApp.notebook_dir="/Users/yinganwang/Development/capstone/pandax-meng" \
+  --ServerApp.allow_origin="http://localhost:3000" \
+  --ServerApp.allow_credentials=True \
+  --ServerApp.disable_check_xsrf=True \
+  --ServerApp.tornado_settings="{'debug': True}"
 ```
 
 It is important to run `jupyter server` in this repo so that you have access to the example notebook and csv. In the long run, we'd like the user to upload their own notebook.
 
 It's also important to pass in ` --NotebookApp.allow_credentials=True` to allow cross-origin requests to the jupyter server. We should look into whether we could consolidate this into one port.
-
-### Run Panda X server
-
-Pull from `https://github.com/pandax-project/pandax-meng/tree/yingan/prototype`, and in the root directory of `pandax-meng`, run
-
-```bash
-python prototype/pandax_server.py
-```
 
 ### Start Jupyter frontend
 

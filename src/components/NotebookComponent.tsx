@@ -4,7 +4,7 @@
  * MIT License
  */
 
-'use client'
+"use client";
 
 import {
   useJupyter,
@@ -25,22 +25,24 @@ type INotebookComponentProps = {
 };
 
 const NOTEBOOK_PATH =
-  "/Users/yinganwang/Development/capstone/pandax-meng/notebooks/spscientist/student-performance-in-exams/src/small_bench_meng.ipynb";
+  "notebooks/spscientist/student-performance-in-exams/src/small_bench_meng.ipynb";
 
 export const NotebookComponent = (props: INotebookComponentProps) => {
   //  const { colorMode, theme } = props;
   const { defaultKernel, serviceManager } = useJupyter({
     jupyterServerUrl: "http://localhost:8888",
-    jupyterServerToken: "02895a35fd09397665a0f2a43acc62e0c1e523c2b79c52ec",
+    jupyterServerToken: "6c44e4203a3ac72f6479370dd4a2c4a3e1eecb9e9572ea0d",
     // jupyterServerUrl: "https://oss.datalayer.run/api/jupyter-server",
-    // "60c1661cc408f978c309d04157af55c9588ff9557c9380e4fb50785750703da6",
     startDefaultKernel: true,
   });
   const extensions = useMemo(
     () => [new CellSidebarExtension({ factory: CellSidebarButton })],
     []
   );
-  const [analysisResult, setAnalysisResult] = useState<string>("");
+  const [currentNotebookPath, setCurrentNotebookPath] =
+    useState<string>(NOTEBOOK_PATH);
+  const [isRewriteSuccessful, setIsRewriteSuccessful] =
+    useState<boolean>(false);
 
   return (
     <>
@@ -65,71 +67,205 @@ export const NotebookComponent = (props: INotebookComponentProps) => {
                 },
               }}
             >
-              <Notebook2
-                path={NOTEBOOK_PATH}
-                id="notebook-nextjs-1"
-                cellSidebarMargin={120}
-                height="100% !important"
-                kernelId={defaultKernel.id}
-                serviceManager={serviceManager}
-                extensions={extensions}
-                Toolbar={NotebookToolbar}
-                children={
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "flex-start",
-                      gap: "12px",
-                      padding: "12px",
-                      backgroundColor: "#f5f5f5",
-                      marginBottom: "8px",
-                    }}
-                  >
-                    <p>PandaX tools:</p>
-                    <Button
-                      style={{
-                        backgroundColor: "#0366d6", // primary blue
-                        color: "#fff",
-                        fontWeight: "600",
-                        padding: "8px 16px",
-                        borderRadius: "6px",
-                        border: "none",
-                        cursor: "pointer",
-                        transition: "all 0.2s ease-in-out",
-                      }}
-                      onMouseOver={(e) =>
-                        (e.currentTarget.style.backgroundColor = "#0356b6")
-                      }
-                      onMouseOut={(e) =>
-                        (e.currentTarget.style.backgroundColor = "#0366d6")
-                      }
-                      onClick={async () => {
-                        try {
-                          const res = await fetch("/api/analyze", {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({
-                              notebookPath: NOTEBOOK_PATH,
-                            }),
-                          });
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "flex-start",
+                  justifyContent: "space-between",
+                  gap: "24px",
+                  width: "100%",
+                }}
+              >
+                {/* Left: Original Notebook */}
+                <div style={{ flex: 1, minWidth: "48%" }}>
+                  <Notebook2
+                    path={NOTEBOOK_PATH}
+                    id="notebook-nextjs-1"
+                    cellSidebarMargin={120}
+                    height="100% !important"
+                    kernelId={defaultKernel.id}
+                    serviceManager={serviceManager}
+                    extensions={extensions}
+                    Toolbar={NotebookToolbar}
+                    children={
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "start",
+                          gap: "12px",
+                          padding: "12px",
+                          backgroundColor: "#f5f5f5",
+                          marginBottom: "8px",
+                        }}
+                      >
+                        <p>Orignal notebook path: {NOTEBOOK_PATH}</p>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "flex-start",
+                            gap: "12px",
+                            marginBottom: "8px",
+                          }}
+                        >
+                          <p>PandaX tools:</p>
+                          <Button
+                            style={{
+                              backgroundColor: "#0366d6",
+                              color: "#fff",
+                              fontWeight: "600",
+                              padding: "8px 16px",
+                              borderRadius: "6px",
+                              border: "none",
+                              cursor: "pointer",
+                              transition: "all 0.2s ease-in-out",
+                            }}
+                            onMouseOver={(e) =>
+                              !!!isRewriteSuccessful
+                                ? (e.currentTarget.style.backgroundColor =
+                                    "#0356b6")
+                                : null
+                            }
+                            onMouseOut={(e) =>
+                              !!!isRewriteSuccessful
+                                ? (e.currentTarget.style.backgroundColor =
+                                    "#0366d6")
+                                : null
+                            }
+                            onClick={async () => {
+                              try {
+                                const res = await fetch("/api/analyze", {
+                                  method: "POST",
+                                  headers: {
+                                    "Content-Type": "application/json",
+                                  },
+                                  body: JSON.stringify({
+                                    path: currentNotebookPath,
+                                  }),
+                                });
 
-                          if (!res.ok) throw new Error("API call failed");
+                                if (!res.ok) throw new Error("API call failed");
+                                const newNotebookPath = await res.json();
+                                setCurrentNotebookPath(
+                                  newNotebookPath.rewritten_notebook_path
+                                );
+                                setIsRewriteSuccessful(true);
+                              } catch (err) {
+                                console.error(err);
+                                alert("Failed to optimize notebook");
+                              }
+                            }}
+                          >
+                            Run analysis & Show Diff
+                          </Button>
+                        </div>
+                      </div>
+                    }
+                  />
+                </div>
+                {isRewriteSuccessful && (
+                  <div style={{ flex: 1, minWidth: "48%" }}>
+                    <Notebook2
+                      path={currentNotebookPath}
+                      id="notebook-nextjs-1"
+                      cellSidebarMargin={120}
+                      height="100% !important"
+                      kernelId={defaultKernel.id}
+                      serviceManager={serviceManager}
+                      extensions={extensions}
+                      Toolbar={NotebookToolbar}
+                      children={
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "start",
+                            gap: "12px",
+                            padding: "12px",
+                            backgroundColor: "#f5f5f5",
+                            marginBottom: "8px",
+                          }}
+                        >
+                          <p>
+                            {isRewriteSuccessful
+                              ? "Rewritten notebook path:"
+                              : "Orignal notebook path:"}{" "}
+                            {currentNotebookPath}
+                          </p>
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "flex-start",
+                              gap: "12px",
+                              marginBottom: "8px",
+                            }}
+                          >
+                            <p>PandaX tools:</p>
+                            <Button
+                              style={{
+                                backgroundColor: isRewriteSuccessful
+                                  ? "#cccccc"
+                                  : "#0366d6", // primary blue
+                                color: "#fff",
+                                fontWeight: "600",
+                                padding: "8px 16px",
+                                borderRadius: "6px",
+                                border: "none",
+                                cursor: "pointer",
+                                transition: "all 0.2s ease-in-out",
+                              }}
+                              onMouseOver={(e) =>
+                                !!!isRewriteSuccessful
+                                  ? (e.currentTarget.style.backgroundColor =
+                                      "#0356b6")
+                                  : null
+                              }
+                              onMouseOut={(e) =>
+                                !!!isRewriteSuccessful
+                                  ? (e.currentTarget.style.backgroundColor =
+                                      "#0366d6")
+                                  : null
+                              }
+                              onClick={async () => {
+                                try {
+                                  const res = await fetch("/api/analyze", {
+                                    method: "POST",
+                                    headers: {
+                                      "Content-Type": "application/json",
+                                    },
+                                    body: JSON.stringify({
+                                      path: currentNotebookPath,
+                                    }),
+                                  });
 
-                          const result = await res.json();
-                          setAnalysisResult(result);
-                        } catch (err) {
-                          console.error(err);
-                          alert("Failed to optimize notebook");
-                        }
-                      }}
-                    >
-                      Run analysis
-                    </Button>
-                    {analysisResult && <text>{analysisResult}</text>}
+                                  if (!res.ok)
+                                    throw new Error("API call failed");
+                                  const newNotebookPath = await res.json();
+                                  setCurrentNotebookPath(
+                                    newNotebookPath.rewritten_notebook_path
+                                  );
+                                  setIsRewriteSuccessful(true);
+                                } catch (err) {
+                                  console.error(err);
+                                  alert("Failed to optimize notebook");
+                                }
+                              }}
+                              disabled={isRewriteSuccessful}
+                            >
+                              {isRewriteSuccessful
+                                ? "Rewritten notebook"
+                                : "Run analysis & Show Diff"}
+                            </Button>
+                          </div>
+                        </div>
+                      }
+                    />
                   </div>
-                }
-              />
+                )}
+              </div>
             </Box>
           </JupyterReactTheme>
         </>
@@ -141,7 +277,7 @@ export const NotebookComponent = (props: INotebookComponentProps) => {
 };
 
 NotebookComponent.defaultProps = {
-  colorMode: 'light' as 'light' | 'dark',
+  colorMode: "light" as "light" | "dark",
   theme: undefined,
 };
 

@@ -4,13 +4,20 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
+    const notebookPath = body.path;
+    if (!notebookPath) {
+      return NextResponse.json(
+        { error: "Missing notebook path" },
+        { status: 400 }
+      );
+    }
 
-    // Call Panda-X Flask API
-    // http://host.docker.internal:5000/analyze for docker dev container
-    const response = await fetch("http://127.0.0.1:5000/analyze", {
+    // Call Panda-X Jupyter server extension
+    // http://host.docker.internal:5000/simple_ext1/default for docker dev container
+    const response = await fetch("http://localhost:8888/simple_ext1/default", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
+      body: JSON.stringify({ path: notebookPath }),
     });
 
     const data = await response.json();
