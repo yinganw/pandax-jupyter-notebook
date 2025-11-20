@@ -47,6 +47,7 @@ export const NotebookComponent = (props: INotebookComponentProps) => {
 
   const [diff, setDiff] = useState(null);
   const [newNotebookJson, setNewNotebookJson] = useState(null);
+  // const [diffJson, setDiffJson] = useState(null);
 
   return (
     <>
@@ -160,6 +161,7 @@ export const NotebookComponent = (props: INotebookComponentProps) => {
                                 setNewNotebookJson(
                                   newNotebookPath.rewritten_notebook_json
                                 );
+                                // setDiffJson(newNotebookPath.diffJsonObj);
                                 setIsRewriteSuccessful(true);
                               } catch (err) {
                                 console.error(err);
