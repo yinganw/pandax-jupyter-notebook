@@ -4,9 +4,9 @@
  * MIT License
  */
 
-'use client';
+"use client";
 
-import { useJupyter, JupyterReactTheme, Cell } from '@datalayer/jupyter-react';
+import { useJupyter, JupyterReactTheme, Cell } from "@datalayer/jupyter-react";
 /*
 import dynamic from 'next/dynamic';
 const Cell = dynamic(
@@ -19,15 +19,17 @@ const Cell = dynamic(
 */
 export const CellComponent = () => {
   const { defaultKernel } = useJupyter({
-    jupyterServerUrl: "https://oss.datalayer.run/api/jupyter-server",
-    jupyterServerToken: "60c1661cc408f978c309d04157af55c9588ff9557c9380e4fb50785750703da6",
+    jupyterServerUrl: "http://localhost:8888",
+    jupyterServerToken: "1420b384d4a8bb3e2a263cee8d0af0294009bd98456f6c30",
+    // jupyterServerUrl: "https://oss.datalayer.run/api/jupyter-server",
+    // jupyterServerToken: "60c1661cc408f978c309d04157af55c9588ff9557c9380e4fb50785750703da6",
     startDefaultKernel: true,
   });
   return (
     <>
-      {defaultKernel ?
+      {defaultKernel ? (
         <>
-          <div style={{fontSize: 20}}>Jupyter Cell in Next.js</div>
+          <div style={{ fontSize: 20 }}>Jupyter Cell in Next.js</div>
           <JupyterReactTheme>
             <Cell
               id="test-cell"
@@ -38,11 +40,11 @@ export const CellComponent = () => {
             />
           </JupyterReactTheme>
         </>
-      :
+      ) : (
         <p>Loading Jupyter Cell...</p>
-      }
+      )}
     </>
-  )
-}
+  );
+};
 
 export default CellComponent;
