@@ -52,13 +52,10 @@ const { defaultKernel, serviceManager } = useJupyter({
 
 In the `pandax-meng` repo's root directory, run
 ```bash
-# Can add notebook_dir to specify a root directory to read files 
-jupyter server \
-  --ServerApp.notebook_dir="/Users/yinganwang/Development/capstone/pandax-meng" \
-  --ServerApp.allow_origin="http://localhost:3000" \
-  --ServerApp.allow_credentials=True \
-  --ServerApp.disable_check_xsrf=True \
-  --ServerApp.tornado_settings="{'debug': True}"
+# Can add notebook_dir to specify a root directory to read files in run_pandax_extension_server.sh
+# Make sure to update the directory in run_pandax_extension_server.sh to be your local directory
+chmod +x pandax-extension/run_pandax_extension_server.sh
+./pandax-extension/run_pandax_jupyter.sh
 ```
 
 It is important to run `jupyter server` in this repo so that you have access to the example notebook and csv. In the long run, we'd like the user to upload their own notebook.
