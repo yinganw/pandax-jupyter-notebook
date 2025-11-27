@@ -25,13 +25,15 @@ type INotebookComponentProps = {
 };
 
 const NOTEBOOK_PATH =
-  "notebooks/spscientist/student-performance-in-exams/src/small_bench_meng.ipynb";
+  "notebooks/aieducation/what-course-are-you-going-to-take/src/small_bench_demo.ipynb";
+
+// "notebooks/spscientist/student-performance-in-exams/src/small_bench_meng_demo.ipynb";
 
 export const NotebookComponent = (props: INotebookComponentProps) => {
   //  const { colorMode, theme } = props;
   const { defaultKernel, serviceManager } = useJupyter({
     jupyterServerUrl: "http://localhost:8888",
-    jupyterServerToken: "6c44e4203a3ac72f6479370dd4a2c4a3e1eecb9e9572ea0d",
+    jupyterServerToken: "f33ebf2fa8f85962555eb0984a75a47c1e8b0fa990a87729",
     // jupyterServerUrl: "https://oss.datalayer.run/api/jupyter-server",
     startDefaultKernel: true,
   });
@@ -43,6 +45,29 @@ export const NotebookComponent = (props: INotebookComponentProps) => {
     useState<string>(NOTEBOOK_PATH);
   const [isRewriteSuccessful, setIsRewriteSuccessful] =
     useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const handleOnClick = async () => {
+    setIsLoading(true);
+    try {
+      const res = await fetch("/api/analyze", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ path: currentNotebookPath }),
+      });
+
+      if (!res.ok) throw new Error("API call failed");
+
+      const data = await res.json();
+      setCurrentNotebookPath(data.rewritten_notebook_path);
+      setIsRewriteSuccessful(true);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to optimize notebook");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <>
@@ -134,31 +159,36 @@ export const NotebookComponent = (props: INotebookComponentProps) => {
                                     "#0366d6")
                                 : null
                             }
-                            onClick={async () => {
-                              try {
-                                const res = await fetch("/api/analyze", {
-                                  method: "POST",
-                                  headers: {
-                                    "Content-Type": "application/json",
-                                  },
-                                  body: JSON.stringify({
-                                    path: currentNotebookPath,
-                                  }),
-                                });
-
-                                if (!res.ok) throw new Error("API call failed");
-                                const newNotebookPath = await res.json();
-                                setCurrentNotebookPath(
-                                  newNotebookPath.rewritten_notebook_path
-                                );
-                                setIsRewriteSuccessful(true);
-                              } catch (err) {
-                                console.error(err);
-                                alert("Failed to optimize notebook");
-                              }
-                            }}
+                            onClick={handleOnClick}
+                            disabled={isLoading}
                           >
-                            Run analysis & Show Diff
+                            {isLoading ? (
+                              <div className="flex items-center">
+                                <svg
+                                  className="animate-spin h-5 w-5 mr-2 text-white"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <circle
+                                    className="opacity-25"
+                                    cx="12"
+                                    cy="12"
+                                    r="10"
+                                    stroke="currentColor"
+                                    strokeWidth="4"
+                                  ></circle>
+                                  <path
+                                    className="opacity-75"
+                                    fill="currentColor"
+                                    d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 100 16v-4l-3 3 3 3v-4a8 8 0 01-8-8z"
+                                  ></path>
+                                </svg>
+                                <p>Optimizing...</p>
+                              </div>
+                            ) : (
+                              "Optimize Notebook"
+                            )}
                           </Button>
                         </div>
                       </div>
