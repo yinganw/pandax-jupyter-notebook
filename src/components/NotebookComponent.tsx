@@ -32,7 +32,7 @@ export const NotebookComponent = (props: INotebookComponentProps) => {
   //  const { colorMode, theme } = props;
   const { defaultKernel, serviceManager } = useJupyter({
     jupyterServerUrl: "http://localhost:8888",
-    jupyterServerToken: "1420b384d4a8bb3e2a263cee8d0af0294009bd98456f6c30",
+    jupyterServerToken: "a5b83a33dbb0ae9449267d629547bc19767aa17fe719069b",
     // jupyterServerUrl: "https://oss.datalayer.run/api/jupyter-server",
     startDefaultKernel: true,
   });
@@ -188,91 +188,91 @@ export const NotebookComponent = (props: INotebookComponentProps) => {
                       extensions={extensions}
                       Toolbar={NotebookToolbar}
                       // children={
-                      // <div>
-                      //   <div
-                      //     style={{
-                      //       display: "flex",
-                      //       flexDirection: "column",
-                      //       alignItems: "start",
-                      //       gap: "12px",
-                      //       padding: "12px",
-                      //       backgroundColor: "#f5f5f5",
-                      //       marginBottom: "8px",
-                      //     }}
-                      //   >
-                      //     <p>
-                      //       {isRewriteSuccessful
-                      //         ? "Rewritten notebook path:"
-                      //         : "Orignal notebook path:"}{" "}
-                      //       {currentNotebookPath}
-                      //     </p>
+                      //   <div>
                       //     <div
                       //       style={{
                       //         display: "flex",
-                      //         alignItems: "center",
-                      //         justifyContent: "flex-start",
+                      //         flexDirection: "column",
+                      //         alignItems: "start",
                       //         gap: "12px",
+                      //         padding: "12px",
+                      //         backgroundColor: "#f5f5f5",
                       //         marginBottom: "8px",
                       //       }}
                       //     >
-                      //       <p>PandaX tools:</p>
-                      //       <Button
-                      //         style={{
-                      //           backgroundColor: isRewriteSuccessful
-                      //             ? "#cccccc"
-                      //             : "#0366d6", // primary blue
-                      //           color: "#fff",
-                      //           fontWeight: "600",
-                      //           padding: "8px 16px",
-                      //           borderRadius: "6px",
-                      //           border: "none",
-                      //           cursor: "pointer",
-                      //           transition: "all 0.2s ease-in-out",
-                      //         }}
-                      //         onMouseOver={(e) =>
-                      //           !!!isRewriteSuccessful
-                      //             ? (e.currentTarget.style.backgroundColor =
-                      //                 "#0356b6")
-                      //             : null
-                      //         }
-                      //         onMouseOut={(e) =>
-                      //           !!!isRewriteSuccessful
-                      //             ? (e.currentTarget.style.backgroundColor =
-                      //                 "#0366d6")
-                      //             : null
-                      //         }
-                      //         onClick={async () => {
-                      //           try {
-                      //             const res = await fetch("/api/analyze", {
-                      //               method: "POST",
-                      //               headers: {
-                      //                 "Content-Type": "application/json",
-                      //               },
-                      //               body: JSON.stringify({
-                      //                 path: currentNotebookPath,
-                      //               }),
-                      //             });
-                      //             if (!res.ok)
-                      //               throw new Error("API call failed");
-                      //             const newNotebookPath = await res.json();
-                      //             setCurrentNotebookPath(
-                      //               newNotebookPath.rewritten_notebook_path
-                      //             );
-                      //             setIsRewriteSuccessful(true);
-                      //           } catch (err) {
-                      //             console.error(err);
-                      //             alert("Failed to optimize notebook");
-                      //           }
-                      //         }}
-                      //         disabled={isRewriteSuccessful}
-                      //       >
+                      //       <p>
                       //         {isRewriteSuccessful
-                      //           ? "Rewritten notebook"
-                      //           : "Run analysis & Show Diff"}
-                      //       </Button>
+                      //           ? "Rewritten notebook path:"
+                      //           : "Orignal notebook path:"}{" "}
+                      //         {currentNotebookPath}
+                      //       </p>
+                      //       <div
+                      //         style={{
+                      //           display: "flex",
+                      //           alignItems: "center",
+                      //           justifyContent: "flex-start",
+                      //           gap: "12px",
+                      //           marginBottom: "8px",
+                      //         }}
+                      //       >
+                      //         <p>PandaX tools:</p>
+                      //         <Button
+                      //           style={{
+                      //             backgroundColor: isRewriteSuccessful
+                      //               ? "#cccccc"
+                      //               : "#0366d6", // primary blue
+                      //             color: "#fff",
+                      //             fontWeight: "600",
+                      //             padding: "8px 16px",
+                      //             borderRadius: "6px",
+                      //             border: "none",
+                      //             cursor: "pointer",
+                      //             transition: "all 0.2s ease-in-out",
+                      //           }}
+                      //           onMouseOver={(e) =>
+                      //             !!!isRewriteSuccessful
+                      //               ? (e.currentTarget.style.backgroundColor =
+                      //                   "#0356b6")
+                      //               : null
+                      //           }
+                      //           onMouseOut={(e) =>
+                      //             !!!isRewriteSuccessful
+                      //               ? (e.currentTarget.style.backgroundColor =
+                      //                   "#0366d6")
+                      //               : null
+                      //           }
+                      //           onClick={async () => {
+                      //             try {
+                      //               const res = await fetch("/api/analyze", {
+                      //                 method: "POST",
+                      //                 headers: {
+                      //                   "Content-Type": "application/json",
+                      //                 },
+                      //                 body: JSON.stringify({
+                      //                   path: currentNotebookPath,
+                      //                 }),
+                      //               });
+                      //               if (!res.ok)
+                      //                 throw new Error("API call failed");
+                      //               const newNotebookPath = await res.json();
+                      //               setCurrentNotebookPath(
+                      //                 newNotebookPath.rewritten_notebook_path
+                      //               );
+                      //               setIsRewriteSuccessful(true);
+                      //             } catch (err) {
+                      //               console.error(err);
+                      //               alert("Failed to optimize notebook");
+                      //             }
+                      //           }}
+                      //           disabled={isRewriteSuccessful}
+                      //         >
+                      //           {isRewriteSuccessful
+                      //             ? "Rewritten notebook"
+                      //             : "Run analysis & Show Diff"}
+                      //         </Button>
+                      //       </div>
                       //     </div>
                       //   </div>
-                      // </div>
                       // }
                       children={
                         <div
