@@ -49,9 +49,12 @@ chmod +x pandax-extension/run_pandax_extension_server.sh
 ./pandax-extension/run_pandax_jupyter.sh
 ```
 
-It is important to run `jupyter server` in this repo so that you have access to the example notebook and csv. In the long run, we'd like the user to upload their own notebook.
+#### Notes on `run_pandax_jupyter.sh`
+Please run the script in the `pandax-meng` root server, so that the pandax extension gets access to all files in the repo, including the example notebooks and csv files.
 
 It's also important to pass in ` --NotebookApp.allow_credentials=True` to allow cross-origin requests to the jupyter server. We should look into whether we could consolidate this into one port.
+
+It is important to run `jupyter server` in the `pandax-meng` repo, so that you have access to the example notebook and csv. In the long run, we'd like the user to upload their own notebook.
 
 ### Start Jupyter frontend
 
