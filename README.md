@@ -1,14 +1,5 @@
 # PandaX-notebook [WIP]
 
-using Jupyter UI from 
-[![Datalayer](https://assets.datalayer.tech/datalayer-25.svg)](https://datalayer.io)
-
-
-##  Jupyter UI for Next.js
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-
-Read more on the [documentation website](https://jupyter-ui.datalayer.tech/docs/examples/next-js) (ensure you have tne needed [development environment](https://jupyter-ui.datalayer.tech/docs/develop/setup)).
-
 ## Getting Started on PandaX notebook
 
 ### Install Jupyter server
@@ -83,6 +74,16 @@ go to `pandax-jupyter-notebook/node_modules/@jupyterlab/apputils-extension/style
 ```
 @import '~react-toastify/dist/ReactToastify.min.css';
 ```
+
+
+using Jupyter UI from 
+[![Datalayer](https://assets.datalayer.tech/datalayer-25.svg)](https://datalayer.io)
+
+
+##  Jupyter UI for Next.js
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+
+Read more on the [documentation website](https://jupyter-ui.datalayer.tech/docs/examples/next-js) (ensure you have tne needed [development environment](https://jupyter-ui.datalayer.tech/docs/develop/setup)).
 
 
 ### PandaX notebook
