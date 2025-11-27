@@ -25,9 +25,7 @@ type INotebookComponentProps = {
 };
 
 const NOTEBOOK_PATH =
-  "notebooks/aieducation/what-course-are-you-going-to-take/src/small_bench_demo.ipynb";
-
-// "notebooks/spscientist/student-performance-in-exams/src/small_bench_meng_demo.ipynb";
+  "notebooks/spscientist/student-performance-in-exams/src/small_bench_meng_demo.ipynb";
 
 export const NotebookComponent = (props: INotebookComponentProps) => {
   //  const { colorMode, theme } = props;
