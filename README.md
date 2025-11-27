@@ -63,6 +63,12 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+
+## PandaX notebook demo
+click to watch video of the prototype.
+[<img width="800" height="805" alt="image" src="https://github.com/user-attachments/assets/f76c8b71-178a-426e-8815-49a13eca10a3" />](https://streamable.com/t57bgp)
+
+
 ## Troubleshooting
 
 If `npm run dev` fails with 
@@ -85,8 +91,4 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 Read more on the [documentation website](https://jupyter-ui.datalayer.tech/docs/examples/next-js) (ensure you have tne needed [development environment](https://jupyter-ui.datalayer.tech/docs/develop/setup)).
 
-
-### PandaX notebook
-click to watch video of the prototype.
-[<img width="800" height="805" alt="image" src="https://github.com/user-attachments/assets/f76c8b71-178a-426e-8815-49a13eca10a3" />](https://streamable.com/t57bgp)
 
