@@ -32,7 +32,7 @@ export const NotebookComponent = (props: INotebookComponentProps) => {
   //  const { colorMode, theme } = props;
   const { defaultKernel, serviceManager } = useJupyter({
     jupyterServerUrl: "http://localhost:8888",
-    jupyterServerToken: "f33ebf2fa8f85962555eb0984a75a47c1e8b0fa990a87729",
+    jupyterServerToken: "3c2ad9a40c67efd578e5358f9f06cbff8a09a9ada8a808d7",
     // jupyterServerUrl: "https://oss.datalayer.run/api/jupyter-server",
     startDefaultKernel: true,
   });
@@ -44,6 +44,8 @@ export const NotebookComponent = (props: INotebookComponentProps) => {
     useState<string>(NOTEBOOK_PATH);
   const [isRewriteSuccessful, setIsRewriteSuccessful] =
     useState<boolean>(false);
+  const [originalExecutionTime, setOriginalExecutionTime] = useState(null);
+  const [rewrittenExecutionTime, setRewrittenExecutionTime] = useState(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleOnClick = async () => {
@@ -59,6 +61,8 @@ export const NotebookComponent = (props: INotebookComponentProps) => {
 
       const data = await res.json();
       setCurrentNotebookPath(data.rewritten_notebook_path);
+      setOriginalExecutionTime(data.original_execution_times["total"]);
+      setRewrittenExecutionTime(data.rewritten_execution_times["total"]);
       setIsRewriteSuccessful(true);
     } catch (err) {
       console.error(err);
@@ -190,6 +194,9 @@ export const NotebookComponent = (props: INotebookComponentProps) => {
                             )}
                           </Button>
                         </div>
+                        {originalExecutionTime && (
+                          <p>Execution time: {originalExecutionTime} ms</p>
+                        )}
                       </div>
                     }
                   />
@@ -289,6 +296,9 @@ export const NotebookComponent = (props: INotebookComponentProps) => {
                                 : "Run analysis & Show Diff"}
                             </Button>
                           </div>
+                          {rewrittenExecutionTime && (
+                            <p>Execution time: {rewrittenExecutionTime} ms</p>
+                          )}
                         </div>
                       }
                     />
