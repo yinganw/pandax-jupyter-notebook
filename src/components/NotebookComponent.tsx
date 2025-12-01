@@ -30,10 +30,11 @@ const NOTEBOOK_PATH =
 export const NotebookComponent = (props: INotebookComponentProps) => {
   const { defaultKernel, serviceManager } = useJupyter({
     jupyterServerUrl: "http://localhost:8888",
-    jupyterServerToken: "5eddae0974487a839171bf2f3f9c804d3a1a2f5d8fb782ab",
+    jupyterServerToken: "pandax-local-dev",
     // jupyterServerUrl: "https://oss.datalayer.run/api/jupyter-server",
     startDefaultKernel: true,
   });
+  console.log("defaultKernel", defaultKernel);
   const extensions = useMemo(
     () => [new CellSidebarExtension({ factory: CellSidebarButton })],
     []
@@ -117,7 +118,7 @@ export const NotebookComponent = (props: INotebookComponentProps) => {
                 <div style={{ flex: 1, minWidth: "48%" }}>
                   <Notebook2
                     path={NOTEBOOK_PATH}
-                    id="notebook-nextjs-1"
+                    id="original-notebook"
                     cellSidebarMargin={120}
                     height="100% !important"
                     kernelId={defaultKernel.id}
@@ -294,7 +295,7 @@ export const NotebookComponent = (props: INotebookComponentProps) => {
                   <div style={{ flex: 1, minWidth: "48%" }}>
                     <Notebook2
                       path={currentNotebookPath}
-                      id="notebook-nextjs-1"
+                      id="rewritten-notebook"
                       cellSidebarMargin={120}
                       height="100% !important"
                       kernelId={defaultKernel.id}
