@@ -61,10 +61,6 @@ export const NotebookComponent = (props: INotebookComponentProps) => {
 
       const data = await res.json();
       setCurrentNotebookPath(data.rewritten_notebook_path);
-      console.log(
-        "data.original_execution_times",
-        data.original_execution_times
-      );
       setOriginalExecutionTime(data.original_execution_times["total"]);
       setRewrittenExecutionTime(data.rewritten_execution_times["total"]);
       setIsRewriteSuccessful(true);
