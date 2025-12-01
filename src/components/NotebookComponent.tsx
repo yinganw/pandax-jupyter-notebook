@@ -28,10 +28,9 @@ const NOTEBOOK_PATH =
   "./notebooks/spscientist/student-performance-in-exams/src/small_bench_meng.ipynb";
 
 export const NotebookComponent = (props: INotebookComponentProps) => {
-  //  const { colorMode, theme } = props;
   const { defaultKernel, serviceManager } = useJupyter({
     jupyterServerUrl: "http://localhost:8888",
-    jupyterServerToken: "ccb831d5c0a3deaa37dbcc07628fa2b2895576a7840db9ff",
+    jupyterServerToken: "5eddae0974487a839171bf2f3f9c804d3a1a2f5d8fb782ab",
     // jupyterServerUrl: "https://oss.datalayer.run/api/jupyter-server",
     startDefaultKernel: true,
   });
@@ -42,13 +41,15 @@ export const NotebookComponent = (props: INotebookComponentProps) => {
   const [currentNotebookPath, setCurrentNotebookPath] =
     useState<string>(NOTEBOOK_PATH);
   const [startCellIdx, setStartCellIdx] = useState<number | "">(0);
+  const [numRewriteTries, setNumRewriteTries] = useState<number | "">(2);
   const [isRewriteSuccessful, setIsRewriteSuccessful] =
     useState<boolean>(false);
   const [originalExecutionTime, setOriginalExecutionTime] = useState(null);
   const [rewrittenExecutionTime, setRewrittenExecutionTime] = useState(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const isOptimizeButtonDisabled = isLoading || startCellIdx === "";
+  const isOptimizeButtonDisabled =
+    isLoading || startCellIdx === "" || numRewriteTries === "";
 
   const handleOnClick = async () => {
     setIsLoading(true);
@@ -57,7 +58,11 @@ export const NotebookComponent = (props: INotebookComponentProps) => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         // startIdx:
-        body: JSON.stringify({ path: currentNotebookPath, startCellIdx }),
+        body: JSON.stringify({
+          path: currentNotebookPath,
+          startCellIdx,
+          numRewriteTries,
+        }),
       });
 
       if (!res.ok) throw new Error("API call failed");
@@ -160,6 +165,37 @@ export const NotebookComponent = (props: INotebookComponentProps) => {
                                     setStartCellIdx(e.target.value);
                                   } else {
                                     setStartCellIdx(Number(e.target.value));
+                                  }
+                                }}
+                                style={{
+                                  marginLeft: "8px",
+                                  width: "80px",
+                                  border: "1px solid #ccc",
+                                  borderRadius: "4px",
+                                  padding: "4px 6px",
+                                }}
+                              />
+                            </label>
+                          </div>
+                          <div
+                            style={{
+                              display: "flex",
+                              flexFlow: "center",
+                              justifyContent: "flex-start",
+                              gap: "12px",
+                              marginBottom: "8px",
+                            }}
+                          >
+                            <label>
+                              Number of tries for each rewrite step:
+                              <input
+                                type="number"
+                                value={numRewriteTries}
+                                onChange={(e) => {
+                                  if (e.target.value === "") {
+                                    setNumRewriteTries(e.target.value);
+                                  } else {
+                                    setNumRewriteTries(Number(e.target.value));
                                   }
                                 }}
                                 style={{
