@@ -11,13 +11,14 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
+    const startCellIdx = body.startCellIdx ?? 0;
 
     // Call Panda-X Jupyter server extension
     // http://host.docker.internal:5000/simple_ext1/default for docker dev container
     const response = await fetch("http://localhost:8888/simple_ext1/default", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ path: notebookPath }),
+      body: JSON.stringify({ path: notebookPath, startCellIdx }),
     });
 
     const data = await response.json();
