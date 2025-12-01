@@ -25,14 +25,14 @@ type INotebookComponentProps = {
 };
 
 const NOTEBOOK_PATH =
-  "notebooks/aieducation/what-course-are-you-going-to-take/src/small_bench_demo.ipynb";
-
+  "./notebooks/spscientist/student-performance-in-exams/src/small_bench_meng.ipynb";
+// "notebooks/aieducation/what-course-are-you-going-to-take/src/small_bench_demo.ipynb";
 
 export const NotebookComponent = (props: INotebookComponentProps) => {
   //  const { colorMode, theme } = props;
   const { defaultKernel, serviceManager } = useJupyter({
     jupyterServerUrl: "http://localhost:8888",
-    jupyterServerToken: "3c2ad9a40c67efd578e5358f9f06cbff8a09a9ada8a808d7",
+    jupyterServerToken: "ccb831d5c0a3deaa37dbcc07628fa2b2895576a7840db9ff",
     // jupyterServerUrl: "https://oss.datalayer.run/api/jupyter-server",
     startDefaultKernel: true,
   });
@@ -42,11 +42,14 @@ export const NotebookComponent = (props: INotebookComponentProps) => {
   );
   const [currentNotebookPath, setCurrentNotebookPath] =
     useState<string>(NOTEBOOK_PATH);
+  const [startCellIdx, setStartCellIdx] = useState<number | "">(0);
   const [isRewriteSuccessful, setIsRewriteSuccessful] =
     useState<boolean>(false);
   const [originalExecutionTime, setOriginalExecutionTime] = useState(null);
   const [rewrittenExecutionTime, setRewrittenExecutionTime] = useState(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const isOptimizeButtonDisabled = isLoading || startCellIdx === "";
 
   const handleOnClick = async () => {
     setIsLoading(true);
@@ -54,15 +57,16 @@ export const NotebookComponent = (props: INotebookComponentProps) => {
       const res = await fetch("/api/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ path: currentNotebookPath }),
+        // startIdx:
+        body: JSON.stringify({ path: currentNotebookPath, startCellIdx }),
       });
 
       if (!res.ok) throw new Error("API call failed");
 
       const data = await res.json();
       setCurrentNotebookPath(data.rewritten_notebook_path);
-      setOriginalExecutionTime(data.original_execution_times["total"]);
-      setRewrittenExecutionTime(data.rewritten_execution_times["total"]);
+      setOriginalExecutionTime(data.original_execution_times);
+      setRewrittenExecutionTime(data.rewritten_execution_times);
       setIsRewriteSuccessful(true);
     } catch (err) {
       console.error(err);
@@ -132,16 +136,48 @@ export const NotebookComponent = (props: INotebookComponentProps) => {
                         <div
                           style={{
                             display: "flex",
-                            alignItems: "center",
-                            justifyContent: "flex-start",
+                            flexDirection: "column",
+                            alignItems: "start",
                             gap: "12px",
                             marginBottom: "8px",
                           }}
                         >
-                          <p>PandaX tools:</p>
+                          <div
+                            style={{
+                              display: "flex",
+                              flexFlow: "center",
+                              justifyContent: "flex-start",
+                              gap: "12px",
+                              marginBottom: "8px",
+                            }}
+                          >
+                            <label>
+                              Start Optimizing from Cell Index:
+                              <input
+                                type="number"
+                                value={startCellIdx}
+                                onChange={(e) => {
+                                  if (e.target.value === "") {
+                                    setStartCellIdx(e.target.value);
+                                  } else {
+                                    setStartCellIdx(Number(e.target.value));
+                                  }
+                                }}
+                                style={{
+                                  marginLeft: "8px",
+                                  width: "80px",
+                                  border: "1px solid #ccc",
+                                  borderRadius: "4px",
+                                  padding: "4px 6px",
+                                }}
+                              />
+                            </label>
+                          </div>
                           <Button
                             style={{
-                              backgroundColor: "#0366d6",
+                              backgroundColor: isOptimizeButtonDisabled
+                                ? "#cccccc"
+                                : "#0366d6",
                               color: "#fff",
                               fontWeight: "600",
                               padding: "8px 16px",
@@ -153,17 +189,21 @@ export const NotebookComponent = (props: INotebookComponentProps) => {
                             onMouseOver={(e) =>
                               !!!isRewriteSuccessful
                                 ? (e.currentTarget.style.backgroundColor =
-                                    "#0356b6")
+                                    isOptimizeButtonDisabled
+                                      ? "#cccccc"
+                                      : "#0356b6")
                                 : null
                             }
                             onMouseOut={(e) =>
                               !!!isRewriteSuccessful
                                 ? (e.currentTarget.style.backgroundColor =
-                                    "#0366d6")
+                                    isOptimizeButtonDisabled
+                                      ? "#cccccc"
+                                      : "#0356b6")
                                 : null
                             }
                             onClick={handleOnClick}
-                            disabled={isLoading}
+                            disabled={isOptimizeButtonDisabled}
                           >
                             {isLoading ? (
                               <div className="flex items-center">
@@ -195,7 +235,21 @@ export const NotebookComponent = (props: INotebookComponentProps) => {
                           </Button>
                         </div>
                         {originalExecutionTime && (
-                          <p>Execution time: {originalExecutionTime} ms</p>
+                          <div>
+                            <div>
+                              {Object.keys(originalExecutionTime)
+                                .filter((key) => key !== "total")
+                                .map((key) => {
+                                  const original = originalExecutionTime[key];
+
+                                  return (
+                                    <p key={key}>
+                                      Cell {key}: {original} ms
+                                    </p>
+                                  );
+                                })}
+                            </div>
+                          </div>
                         )}
                       </div>
                     }
@@ -230,74 +284,24 @@ export const NotebookComponent = (props: INotebookComponentProps) => {
                               : "Orignal notebook path:"}{" "}
                             {currentNotebookPath}
                           </p>
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "flex-start",
-                              gap: "12px",
-                              marginBottom: "8px",
-                            }}
-                          >
-                            <p>PandaX tools:</p>
-                            <Button
-                              style={{
-                                backgroundColor: isRewriteSuccessful
-                                  ? "#cccccc"
-                                  : "#0366d6", // primary blue
-                                color: "#fff",
-                                fontWeight: "600",
-                                padding: "8px 16px",
-                                borderRadius: "6px",
-                                border: "none",
-                                cursor: "pointer",
-                                transition: "all 0.2s ease-in-out",
-                              }}
-                              onMouseOver={(e) =>
-                                !!!isRewriteSuccessful
-                                  ? (e.currentTarget.style.backgroundColor =
-                                      "#0356b6")
-                                  : null
-                              }
-                              onMouseOut={(e) =>
-                                !!!isRewriteSuccessful
-                                  ? (e.currentTarget.style.backgroundColor =
-                                      "#0366d6")
-                                  : null
-                              }
-                              onClick={async () => {
-                                try {
-                                  const res = await fetch("/api/analyze", {
-                                    method: "POST",
-                                    headers: {
-                                      "Content-Type": "application/json",
-                                    },
-                                    body: JSON.stringify({
-                                      path: currentNotebookPath,
-                                    }),
-                                  });
-
-                                  if (!res.ok)
-                                    throw new Error("API call failed");
-                                  const newNotebookPath = await res.json();
-                                  setCurrentNotebookPath(
-                                    newNotebookPath.rewritten_notebook_path
-                                  );
-                                  setIsRewriteSuccessful(true);
-                                } catch (err) {
-                                  console.error(err);
-                                  alert("Failed to optimize notebook");
-                                }
-                              }}
-                              disabled={isRewriteSuccessful}
-                            >
-                              {isRewriteSuccessful
-                                ? "Rewritten notebook"
-                                : "Run analysis & Show Diff"}
-                            </Button>
-                          </div>
                           {rewrittenExecutionTime && (
-                            <p>Execution time: {rewrittenExecutionTime} ms</p>
+                            <div>
+                              {originalExecutionTime &&
+                                Object.keys(rewrittenExecutionTime)
+                                  .filter((key) => key !== "total")
+                                  .map((key) => {
+                                    const rewritten =
+                                      rewrittenExecutionTime[key];
+                                    const original = originalExecutionTime[key];
+
+                                    return (
+                                      <p key={key}>
+                                        Cell {key}: went from {original} ms to{" "}
+                                        {rewritten} ms after rewriting
+                                      </p>
+                                    );
+                                  })}
+                            </div>
                           )}
                         </div>
                       }
